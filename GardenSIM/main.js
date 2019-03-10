@@ -67,7 +67,18 @@ function BoundingBox(x, y, width, height) {
 
 BoundingBox.prototype.collide = function (other) {
 
-    if (this.right >= other.left && this.left <= other.right && this.top <= other.bottom && this.bottom >= other.top) {
+
+  // console.log(this.left);
+    // console.log(other.bottom);
+   // console.log();
+
+    if ((this.left < other.left && this.left > other.right
+        && this.top < other.top && this.bottom > other.bottom)
+
+        ||
+        
+        (this.right < other.right && this.right > other.left
+            &&  this.bottom < other.bottom) ) {
         return true;
     }
     return false;
@@ -92,16 +103,13 @@ Background.prototype.draw = function (ctx) {
             ctx.stroke();
 
 
+            ctx.beginPath();
+            ctx.moveTo(0, 0 + 100 * row);
+            ctx.lineTo(800 , 0 + 100 * row);
+            ctx.stroke();
 
         }
-
-        
-        ctx.beginPath();
-        ctx.moveTo(0, 0 + 100 * row);
-        ctx.lineTo(800 , 0 + 100 * row);
-        ctx.stroke();
-
-        
+    
     }
 
 
@@ -115,13 +123,13 @@ Background.prototype.update = function () {
 
 
 
-function Seed(game, x, y, n, r) {
+function Seed(game, x, y, r) {
     this.x = x;
     this.y = y;
     this.game = game;
     this.gotRain = r;
-    this.seedNumber = n;
-    this.boundingbox = new BoundingBox(this.x, this.y, 0, 0);
+    this.grow = 0;
+    this.boundingbox = new BoundingBox(this.x + 15, this.y + 15, -30, -30);
     this.ctx = game.ctx;
 };
 
@@ -130,9 +138,9 @@ Seed.prototype.constructor = Seed;
 
 
 Seed.prototype.update = function () {
-
-    this.gotRain = this.gotRain;
-   //console.log("SEED #: " + this.seedNumber + " Rain %: " + this.gotRain);
+    
+this.gotRain = this.gotRain;
+ 
 
 };
 
@@ -142,26 +150,134 @@ Seed.prototype.draw = function (ctx) {
 
 
 
-            ctx.lineWidth = 3;
-            ctx.strokeStyle = "blue";
-            ctx.strokeRect(this.x, this.y, 0, 0);
+            // ctx.lineWidth = 5;
+            // ctx.strokeStyle = "blue";
+            // ctx.strokeRect(this.x + 15, this.y + 15, -30, -30);
+
+           // console.log(this.gotRain);
+
+        
+
+            if(this.gotRain){
+
+               // console.log("Black");
+               ctx.beginPath();
+               ctx.arc(this.x, this.y, 10, 0, 2 * Math.PI);
+              // ctx.strokeStyle ="black";
+               ctx.fillStyle= "rgb(255, 255,0)";
+               ctx.fill();
+               ctx.stroke();
+    
+
+                this.grow += 1;
 
 
-            if(!this.gotRain){
-            ctx.fillStyle= "rgb(0,0,0)";
+                if(this.grow > 500){
 
-            }else{
+                    
+                    ctx.beginPath();
+                    ctx.arc(this.x - 10, this.y-10, 10, 0, 2 * Math.PI);
+                    ctx.fillStyle = "pink";
+                    ctx.fill();
+                    ctx.stroke();
+                    
 
-            ctx.fillStyle = "rgb(255,255,255)";
+
+                }
+                
+                if(this.grow > 1000){
+
+                    ctx.beginPath();
+                    ctx.arc(this.x + 5, this.y-10, 10, 0, 2 * Math.PI);
+                    ctx.fillStyle = "pink";
+                    ctx.fill();
+                    ctx.stroke();
 
 
-            }
 
 
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, 10, 0, 2 * Math.PI);
-            ctx.fill();
-            ctx.stroke();
+                }
+
+                if(this.grow > 1500){
+
+                    ctx.beginPath();
+                    ctx.arc(this.x + 10, this.y, 10, 0, 2 * Math.PI);
+                    ctx.fillStyle = "pink";
+                    ctx.fill();
+                    ctx.stroke();
+
+
+
+
+                }
+
+                if(this.grow > 2000){
+
+                    ctx.beginPath();
+                    ctx.arc(this.x + 5, this.y + 10, 10, 0, 2 * Math.PI);
+                    ctx.fillStyle = "pink";
+                    ctx.fill();
+                    ctx.stroke();
+
+
+
+
+                }
+
+                if(this.grow > 2500){
+
+                    ctx.beginPath();
+                    ctx.arc(this.x - 5, this.y + 10, 10, 0, 2 * Math.PI);
+                    ctx.fillStyle = "pink";
+                    ctx.fill();
+                    ctx.stroke();
+
+
+
+
+                }
+
+
+                if(this.grow > 3000){
+
+                    ctx.beginPath();
+                    ctx.arc(this.x - 10, this.y + 5, 10, 0, 2 * Math.PI);
+                    ctx.fillStyle = "pink";
+                    ctx.fill();
+                    ctx.stroke();
+
+
+
+
+                }
+
+
+
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 10, 0, 2 * Math.PI);
+                //ctx.strokeStyle ="black";
+                ctx.fillStyle= "rgb(255, 255,0)";
+                ctx.fill();
+                ctx.stroke();
+
+       
+                }else{
+
+
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 10, 0, 2 * Math.PI);
+              //  ctx.strokeStyle ="black";
+                ctx.fillStyle = "rgb(255,255,255)";
+                ctx.fill();
+                ctx.stroke();
+                
+
+    
+                }
+            
+
+
+
 
 
     //console.log("HERE")
@@ -174,7 +290,7 @@ function Cloud(game) {
     this.seedpatch = game.seedPatch[0];
     this.nX = Math.round(Math.random()) * 2 - 1;
     this.nY = Math.round(Math.random()) * 2 - 1;
-    this.boundingbox = new BoundingBox(this.x, this.y, 100, 75);
+    this.boundingbox = new BoundingBox(this.x, this.y, 100/2, 75/2);
     Entity.call(this, game, Math.floor(Math.random() * 701), Math.floor(Math.random() * 626));
 
     
@@ -207,30 +323,41 @@ Cloud.prototype.update = function () {
         this.nY = -1;
     }
 
-    if(this.x > 700){
+    if(this.x > 750){
 
         this.nX = 1;
 
     }
 
-    if(this.y > 625){
+    if(this.y > 655){
 
         this.nY = 1;
     }
+
+    this.boundingbox = new BoundingBox(this.x, this.y, 100/2, 75/2);
 
 
 
     for(let i = 0; i < this.game.seedPatch.length; i++){
         let CurrentSeed = this.game.seedPatch[i];
-        if(this.boundingbox.collide(CurrentSeed.boundingbox));
 
-        CurrentSeed.gotRain = true;
-        console.log("SEED #: " + CurrentSeed.seedNumber + " got rain: " + CurrentSeed.gotRain);
+        if(this.boundingbox.collide(CurrentSeed.boundingbox)){
+
+         //
+          //  console.log("hit");
+            
+            CurrentSeed.gotRain = true;
+
+        }else{
+            
+          //  CurrentSeed.gotRain = false;
+        };
+        //console.log("SEED #: " + CurrentSeed.seedNumber + " got rain: " + CurrentSeed.gotRain);
 
 
     }
 
-    // this.boundingbox = new BoundingBox(this.x, this.y, 100, 75);
+     
 
 }
 
@@ -239,9 +366,9 @@ Cloud.prototype.draw = function (ctx) {
 
     ctx.lineWidth = 3;
     ctx.strokeStyle = "red";
-    ctx.strokeRect(this.x, this.y, 100,75);
+    ctx.strokeRect(this.x, this.y, 100/2,75/2);
     
-    this.animation.drawFrame(this.game.clockTick, ctx, this.x,this.y);
+    this.animation.drawFrame(this.game.clockTick, ctx, this.x,this.y,0.5);
     // ctx.lineWidth = 3;
     // ctx.strokeStyle = "blue";
     // ctx.strokeRect(this.x, this.y, 100, 75);
@@ -270,26 +397,21 @@ ASSET_MANAGER.downloadAll(function () {
 
     let seeds;
 
-
-    var i = 1;
-
     for(let row = 0; row < 8; row ++){
         for(let col = 0; col < 7; col++){
 
             
 
-            seeds = new Seed(gameEngine, 50 + 100 * row, 50 + 100 * col, i, false);
-            console.log("row" + row);
+            seeds = new Seed(gameEngine, 50 + 100 * row, 50 + 100 * col, false);
+          //  console.log("row" + row);
             console.log(col);
             gameEngine.addEntity(seeds);
             seedPatch.push(seeds);
-
-            i += 1;
 
         }
     }
 
     gameEngine.addEntity(new Cloud(gameEngine)); 
 
-    console.log("All Done!");
+  //  console.log("All Done!");
 });
